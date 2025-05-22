@@ -1,0 +1,14 @@
+curl -s https://www.amfiindia.com/spages/NAVAll.txt -o NAVAll.txt
+awk -F ';' '
+BEGIN { OFS="\t"; print "Scheme Name", "Net Asset Value" }
+/^[0-9]/ {
+    if ($4 != "" && $5 != "") {
+        print $4, $5
+    }
+}' NAVAll.txt > scheme_nav.tsv
+
+echo "Extracted data saved to scheme_nav.tsv"
+
+
+Convert to JSON
+awk -F '\t' 'NR>1 {printf "{\"Scheme Name\":\"%s\", \"NAV\":\"%s\"}\n", $1, $2}' scheme_nav.tsv > scheme_nav.json
